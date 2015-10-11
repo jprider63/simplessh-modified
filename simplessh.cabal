@@ -15,6 +15,10 @@ homepage:            http://hub.darcs.net/thoferon/simplessh
 extra-source-files: include/simplessh.h
                   , include/simplessh/types.h
 
+flag gcrypt
+  description: add hack that allows to run threaded program when libssh2 is built against gcrypt
+  default: False
+
 library
   exposed-modules:   Network.SSH.Client.SimpleSSH
   other-modules:     Network.SSH.Client.SimpleSSH.Types
@@ -31,6 +35,12 @@ library
                    , bytestring >= 0.9
   cc-options:        -Wall -g
   ghc-options:       -Wall
+
+  if flag(gcrypt)
+    c-sources:           cbits/gcrypt-fix.c
+    Includes:            include/gcrypt-fix.h
+    Exposed-modules:     Network.SSH.Client.SimpleSSH.GCrypt
+    Cpp-options:         -DGCRYPT
 
 source-repository head
   type:              darcs
